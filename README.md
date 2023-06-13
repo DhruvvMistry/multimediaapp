@@ -4,9 +4,6 @@ The Two Features that i decided to implement are Sorting & Searching. The Reason
 # Sorting 
 This the First feature which allows user to sort the file by its name,type or size. in both Ascending and Descnding orders.as for how it works it is done using js sort() function with custom condition . name and type are available in data but size is calculated once while loading the page and updates the data with size property.and then the files are sorted according to the option selected in dropdown.
 
-# Searching
-This feature takes the input from search bar and filters the files by it name and only displays the files which contain the string from search bar.this feature makes use of app extreemly smooth and fast.
-
 ```
   const [UpdatedData, setUpdatedData] = useState([])
 
@@ -76,6 +73,8 @@ const sortFiles = (value) => {
 ```
 here this code is for sorting feature where size is calculated on page load so the files can sorted with it.then after when any option is selected it calls function sortFiles which matchs the value in switch case and sorts the files accordingly and the files are shown once setMyFiles(sortedFiles) is called.
 
+# Searching
+This feature takes the input from search bar and filters the files by it name and only displays the files which contain the string from search bar.this feature makes use of app extreemly smooth and fast.
 
 ```
   const [searchText, setSearchText] = useState(null)
