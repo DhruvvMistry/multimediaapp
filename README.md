@@ -1,71 +1,112 @@
-# Getting Started with Create React App
+# Multimedia App Bounty Description
+The Two Features that i decided to implement are Sorting & Searching. The Reason for choosing these features is simple as the app has more files it becomes little harder to find files if you cant search or sort the files by its type, size or name.these fetures make use of the app more seamless and smooth.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Sorting 
+This the First feature which allows user to sort the file by its name,type or size. in both Ascending and Descnding orders.as for how it works it is done using js sort() function with custom condition . name and type are available in data but size is calculated once while loading the page and updates the data with size property.and then the files are sorted according to the option selected in dropdown.
 
-## Available Scripts
+# Searching
+This feature takes the input from search bar and filters the files by it name and only displays the files which contain the string from search bar.this feature makes use of app extreemly smooth and fast.
 
-In the project directory, you can run:
+```
+  const [UpdatedData, setUpdatedData] = useState([])
 
-### `npm start`
+ useEffect(() => {
+    const calculateFileSize = async () => {
+      const updatedFiles = await Promise.all(
+        data.map(async (file) => {
+          const response = await fetch(file.path);
+          const blob = await response.blob();
+          const size = blob.size;
+          return { ...file, size };
+        })
+      );
+      setUpdatedData(updatedFiles);
+      setMyFiles(updatedFiles);
+    };
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    calculateFileSize();
+  }, [])
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+const sortFiles = (value) => {
+    let sortedFiles = [];
 
-### `npm test`
+    switch (value) {
+      case "default":
+        sortedFiles = [...UpdatedData];
+        break;
+      case "nameASC":
+        sortedFiles = [...myFiles].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "typeASC":
+        sortedFiles = [...myFiles].sort((a, b) => a.type.localeCompare(b.type));
+        break;
+      case "sizeASC":
+        sortedFiles = [...myFiles].sort((a, b) => a.size - b.size);
+        break;
+      case "nameDESC":
+        sortedFiles = [...myFiles].sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "typeDESC":
+        sortedFiles = [...myFiles].sort((a, b) => b.type.localeCompare(a.type));
+        break;
+      case "sizeDESC":
+        sortedFiles = [...myFiles].sort((a, b) => b.size - a.size);
+        break;
+      default:
+        sortedFiles = [...UpdatedData];
+        break;
+    }
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    setMyFiles(sortedFiles);
+  };
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  <label htmlFor="">Sort Files By :</label><select style={styles.controlDDL}
+              onChange={(event) => {
+                sortFiles(event.target.value);
+              }}>
+              <option value="default">--Select--</option>
+              <option value="typeASC">Type ASC</option>
+              <option value="nameASC">Name ASC</option>
+              <option value="sizeASC">Size ASC</option>
+              <option value="typeDESC">Type DESC</option>
+              <option value="nameDESC">Name DESC</option>
+              <option value="sizeDESC">Size DESC</option>
+            </select>
+```
+here this code is for sorting feature where size is calculated on page load so the files can sorted with it.then after when any option is selected it calls function sortFiles which matchs the value in switch case and sorts the files accordingly and the files are shown once setMyFiles(sortedFiles) is called.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+  const [searchText, setSearchText] = useState(null)
 
-### `npm run eject`
+    useEffect(() => {
+    searchFiles(searchText)
+  }, [searchText])
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+  const searchFiles = (value) => {
+    if (value != "") {
+      let Files = [];
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+      UpdatedData.forEach((file) => {
+        if (file.name.toLowerCase().includes(value.toLowerCase())) {
+          Files.push(file);
+        }
+      })
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+      setMyFiles(Files);
+    } else {
+      setMyFiles(UpdatedData)
+    }
+  };
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  <input type="text" placeholder='Search Files' style={{ ...styles.controlSearch, float: "right", clear: "both" }}
+              value={searchText}
+              onInput={(event) => setSearchText(event.target.value)}
+            />
+            <i class="fa-sharp fa-solid fa-xmark" onClick={() => {
+              setSearchText("");
+            }} style={styles.close}></i>
+```
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-"# multimediaapp" 
+this here creates a state varible  searchText which has twoway binding with search bar.so when text is changed in search bar use efffect is called and calls searchFiles(searchText) which check if each file name contains the string from searchbar.and it also has a has clear button which is fa icon which clears the earch bar and filters.
